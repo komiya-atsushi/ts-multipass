@@ -1,0 +1,27 @@
+{
+  "name": "ts-multipass",
+  "version": "1.0.0",
+  "description": "",
+  "author": {
+    "name": "KOMIYA Atsushi",
+    "url": "https://github.com/komiya-atsushi"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "gts": "^5.0.0",
+    "typescript": "~5.1.6",
+    "@types/node": "^20.4.5"
+  }
+}
