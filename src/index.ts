@@ -1,26 +1,50 @@
-console.log("Try npm run lint/fix!");
+import {createCipheriv, createHash, randomBytes, createHmac} from 'crypto';
 
-const longString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
-
-const trailing = 'Semicolon'
-
-			const why={am:'I tabbed?'};
-
-const iWish = "I didn't have a trailing space..."; 
-
-const sicilian = true;;
-
-const vizzini = (!!sicilian) ? !!!sicilian : sicilian;
-
-const re = /foo   bar/;
-
-export function doSomeStuff(withThis: string, andThat: string, andThose: string[]) {
-    //function on one line
-    if(!Boolean(andThose.length)) {return false;}
-    console.log(withThis);
-    console.log(andThat);
-    console.dir(andThose);
-    console.log(longString, trailing, why, iWish, vizzini, re);
-    return;
+export interface CustomerDataEssentials {
+  email: string;
 }
-// TODO: more examples
+
+interface CustomerDataWithTimestamp extends CustomerDataEssentials {
+  created_at: string;
+}
+
+export class Multipass<
+  T extends CustomerDataEssentials = CustomerDataEssentials,
+> {
+  private readonly encryptionKey: Buffer;
+  private readonly signatureKey: Buffer;
+
+  constructor(multipassSecret: string) {
+    const hash = createHash('sha256');
+    const keyMaterial = hash.update(multipassSecret).digest();
+    this.encryptionKey = keyMaterial.subarray(0, 16);
+    this.signatureKey = keyMaterial.subarray(16, 32);
+  }
+
+  generateToken(data: T, now?: Date): string {
+    const withTimestamp: CustomerDataWithTimestamp = {
+      created_at: (now ?? new Date()).toISOString(),
+      ...data,
+    };
+    const cipherText = this.encrypt(JSON.stringify(withTimestamp));
+
+    return Buffer.concat([cipherText, this.sign(cipherText)]).toString(
+      'base64url'
+    );
+  }
+
+  private encrypt(plainText: string): Buffer {
+    const iv = randomBytes(16);
+    const cipher = createCipheriv('aes-128-cbc', this.encryptionKey, iv);
+
+    return Buffer.concat([
+      iv,
+      cipher.update(plainText, 'utf-8'),
+      cipher.final(),
+    ]);
+  }
+
+  private sign(data: Buffer): Buffer {
+    return createHmac('sha256', this.signatureKey).update(data).digest();
+  }
+}
