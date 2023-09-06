@@ -1,13 +1,16 @@
 {
   "name": "ts-multipass",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shopify Multipass module for TypeScript",
   "author": {
     "name": "KOMIYA Atsushi",
     "url": "https://github.com/komiya-atsushi"
   },
   "license": "MIT",
-  "main": "index.js",
+  "main": "build/src/index.js",
+  "files": [
+    "build/src/**/*.{js,d.ts}"
+  ],
   "scripts": {
     "test": "jest",
     "lint": "gts lint",
@@ -27,5 +30,15 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "typescript": "~5.1.6"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/komiya-atsushi/ts-multipass.git"
+  },
+  "bugs": {
+    "url": "https://github.com/komiya-atsushi/ts-multipass/issues"
   }
 }
