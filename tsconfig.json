@@ -15,7 +15,6 @@
     "strict": true,
     "target": "es2021",
 
-    "skipLibCheck": false,
     "rootDir": ".",
     "outDir": "build"
   },

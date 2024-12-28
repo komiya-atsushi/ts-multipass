@@ -1,4 +1,5 @@
 import {createDecipheriv, createHash, createHmac} from 'node:crypto';
+import {describe, expect, test} from 'vitest';
 import {type CustomerDataEssentials, Multipass} from '../src';
 
 describe('Multipass#generateToken()', () => {
