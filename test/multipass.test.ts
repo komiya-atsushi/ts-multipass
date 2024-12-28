@@ -1,5 +1,5 @@
-import {CustomerDataEssentials, Multipass} from '../src';
-import {createDecipheriv, createHash, createHmac} from 'crypto';
+import {createDecipheriv, createHash, createHmac} from 'node:crypto';
+import {type CustomerDataEssentials, Multipass} from '../src';
 
 describe('Multipass#generateToken()', () => {
   const secretKey = 'secret key';
@@ -32,7 +32,7 @@ describe('Multipass#generateToken()', () => {
   function decrypt(
     cipherText: Buffer,
     encryptionKey: Buffer,
-    iv: Buffer
+    iv: Buffer,
   ): string {
     const decipher = createDecipheriv('aes-128-cbc', encryptionKey, iv);
     return Buffer.concat([
@@ -54,7 +54,7 @@ describe('Multipass#generateToken()', () => {
     expect(signature).toStrictEqual(
       createHmac('sha256', signatureKey)
         .update(Buffer.concat([iv, cipherText]))
-        .digest()
+        .digest(),
     );
 
     const obj = JSON.parse(plainText);
@@ -62,11 +62,11 @@ describe('Multipass#generateToken()', () => {
     expect(obj).toStrictEqual({
       email: 'foo@example.com',
       created_at: expect.stringMatching(
-        /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
+        /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/,
       ),
     });
 
-    const createdAt = Date.parse(obj['created_at']);
+    const createdAt = Date.parse(obj.created_at);
     expect(createdAt).toBeGreaterThanOrEqual(begin);
     expect(createdAt).toBeLessThanOrEqual(end);
   });
@@ -76,7 +76,7 @@ describe('Multipass#generateToken()', () => {
     const now = '2023-09-01T00:00:00.000Z';
     const token = multipass.generateToken(
       {email: 'foo@example.com'},
-      new Date(now)
+      new Date(now),
     );
 
     const {iv, cipherText, signature} = splitIntoBuffers(token);
@@ -86,7 +86,7 @@ describe('Multipass#generateToken()', () => {
     expect(signature).toStrictEqual(
       createHmac('sha256', signatureKey)
         .update(Buffer.concat([iv, cipherText]))
-        .digest()
+        .digest(),
     );
 
     const obj = JSON.parse(plainText);
@@ -115,7 +115,7 @@ describe('Multipass#generateToken()', () => {
     expect(signature).toStrictEqual(
       createHmac('sha256', signatureKey)
         .update(Buffer.concat([iv, cipherText]))
-        .digest()
+        .digest(),
     );
 
     const obj = JSON.parse(plainText);
@@ -124,7 +124,7 @@ describe('Multipass#generateToken()', () => {
       email: 'foo@example.com',
       return_to: 'https://www.example.com/',
       created_at: expect.stringMatching(
-        /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
+        /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/,
       ),
     });
   });

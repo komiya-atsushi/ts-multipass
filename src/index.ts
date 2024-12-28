@@ -1,4 +1,4 @@
-import {createCipheriv, createHash, randomBytes, createHmac} from 'crypto';
+import {createCipheriv, createHash, createHmac, randomBytes} from 'node:crypto';
 
 export interface CustomerDataEssentials {
   email: string;
@@ -29,7 +29,7 @@ export class Multipass<
     const cipherText = this.encrypt(JSON.stringify(withTimestamp));
 
     return Buffer.concat([cipherText, this.sign(cipherText)]).toString(
-      'base64url'
+      'base64url',
     );
   }
 
